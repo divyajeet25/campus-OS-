@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campus-OS</title>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+    background: linear-gradient(135deg,#0f0f1a,#1a1a2e);
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+    margin:0;
+    padding:0;
+    text-align:center;
+}
+
+.title{
+    color:#9f5fff;
+    font-size:50px;
+    margin-top:40px;
+    text-shadow:0 0 20px #9f5fff;
+}
+
+.container{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:30px;
+    padding:40px 20px;
+}
+
+.card{
+    background:#1c1c3c;
+    border-radius:20px;
+    padding:30px;
+    width:320px;
+    box-shadow:0 0 20px rgba(159,95,255,0.4);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 0 30px rgba(159,95,255,0.7);
+}
+
+h2{
+    margin-bottom:20px;
+}
+
+input{
+    width:90%;
+    padding:10px;
+    margin:8px 0;
+    border:none;
+    border-radius:8px;
+    outline:none;
+}
+
+input:focus{
+    box-shadow:0 0 10px #9f5fff;
+}
+
+button{
+    background:linear-gradient(45deg,#5f00ff,#9f5fff);
+    border:none;
+    padding:10px 20px;
+    color:white;
+    font-size:15px;
+    cursor:pointer;
+    border-radius:8px;
+    margin-top:10px;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+    box-shadow:0 0 15px #9f5fff;
+}
+
+#CGPA_Result{
+    margin-top:15px;
+    font-size:18px;
+    font-weight:bold;
+}
+
+#timer{
+    font-size:28px;
+    margin:15px 0;
+    color:#9f5fff;
+}
+</style>
+</head>
+
+<body>
+
+<h1 class="title">Campus-OS</h1>
+
+<div class="container">
+
+    <!-- CGPA -->
+    <div class="card">
+        <h2>CGPA Calculator</h2>
+
+        <input type="number" id="marks1" placeholder="Subject 1 mark">
+        <input type="number" id="marks2" placeholder="Subject 2 mark">
+        <input type="number" id="marks3" placeholder="Subject 3 mark">
+        <input type="number" id="marks4" placeholder="Subject 4 mark">
+        <input type="number" id="marks5" placeholder="Subject 5 mark">
+        <input type="number" id="marks6" placeholder="Subject 6 mark">
+
+        <button onclick="CalculateCGPA()">Calculate CGPA</button>
+        <p id="CGPA_Result"></p>
+    </div>
+
+    <!-- Performance -->
+    <div class="card">
+        <h2>Performance Analyser</h2>
+        <canvas id="performanceChart"></canvas>
+    </div>
+
+    <!-- Focus Mode -->
+    <div class="card">
+        <h2>Focus Mode</h2>
+        <p id="timer">00:00:00</p>
+        <button onclick="startTimer()">Start</button>
+        <button onclick="stopTimer()">Stop</button>
+    </div>
+
+</div>
+
+<script>
+/* CGPA Calculator */
+function CalculateCGPA() {
+    let marks = [];
+    for (let i = 1; i <= 6; i++) {
+        marks.push(parseFloat(document.getElementById(`marks${i}`).value) || 0);
+    }
+
+    let total = marks.reduce((a,b)=>a+b,0);
+    let cgpa = (total / (marks.length * 100)) * 10;
+    let result = document.getElementById("CGPA_Result");
+
+    result.innerText = `Your CGPA is: ${cgpa.toFixed(2)}`;
+
+    if(cgpa >= 9){
+        result.style.color = "lightgreen";
+    } else if(cgpa >= 7){
+        result.style.color = "orange";
+    } else{
+        result.style.color = "red";
+    }
+}
+
+/* Focus Timer */
+let interval;
+let seconds=0, minutes=0, hours=0;
+
+function startTimer(){
+    if(interval) return;
+
+    interval = setInterval(()=>{
+        seconds++;
+        if(seconds==60){
+            seconds=0;
+            minutes++;
+        }
+        if(minutes==60){
+            minutes=0;
+            hours++;
+        }
+
+        document.getElementById("timer").innerText =
+            `${String(hours).padStart(2,'0')}:`+
+            `${String(minutes).padStart(2,'0')}:`+
+            `${String(seconds).padStart(2,'0')}`;
+    },1000);
+}
+
+function stopTimer(){
+    clearInterval(interval);
+    interval=null;
+}
+
+/* Performance Chart */
+const ctx = document.getElementById('performanceChart');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+        datasets: [{
+            label: 'Performance',
+            data: [65, 75, 80, 85, 90, 95],
+            borderColor: '#9f5fff',
+            backgroundColor: 'rgba(159,95,255,0.2)',
+            tension:0.4,
+            fill:true
+        }]
+    },
+    options: {
+        responsive:true,
+        plugins:{
+            legend:{
+                labels:{ color:'white' }
+            }
+        },
+        scales:{
+            x:{ ticks:{ color:'white' }},
+            y:{ ticks:{ color:'white' }, beginAtZero:true }
+        }
+    }
+});
+</script>
+
+</body>
+</html>

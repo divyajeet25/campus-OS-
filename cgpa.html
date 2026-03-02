@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CGPA - Campus OS</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+body{
+min-height:100vh;
+background:#0f0f1a;
+color:white;
+overflow-x:hidden;
+position:relative;
+padding-top:140px;
+}
+
+/* Animated Blobs */
+body::before, body::after{
+content:'';
+position:absolute;
+width:500px;height:500px;
+border-radius:50%;
+filter:blur(120px);
+z-index:-1;
+animation:move 12s infinite alternate;
+}
+body::before{background:#7c3aed;top:-100px;left:-100px;}
+body::after{background:#c084ff;bottom:-100px;right:-100px;}
+@keyframes move{from{transform:translate(0,0);}to{transform:translate(100px,50px);}}
+
+/* Navbar */
+.navbar{
+position:fixed;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+display:flex;
+gap:18px;
+padding:12px 30px;
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(25px);
+border-radius:60px;
+border:1px solid rgba(255,255,255,0.15);
+box-shadow:0 10px 35px rgba(0,0,0,0.6);
+}
+.navbar a{
+text-decoration:none;
+font-weight:600;
+font-size:14px;
+padding:10px 18px;
+border-radius:30px;
+background:rgba(255,255,255,0.1);
+color:#ffffff;
+transition:0.3s;
+}
+.navbar a:hover{
+background:linear-gradient(45deg,#7c3aed,#c084ff);
+box-shadow:0 0 20px #c084ff;
+transform:translateY(-3px);
+}
+
+/* Card */
+.card{
+width:420px;
+margin:auto;
+padding:40px;
+border-radius:30px;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(20px);
+box-shadow:0 15px 50px rgba(0,0,0,0.6);
+text-align:center;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:12px 0;
+border-radius:15px;
+border:1px solid rgba(255,255,255,0.1);
+background:rgba(255,255,255,0.08);
+color:white;
+outline:none;
+}
+
+button{
+padding:12px 25px;
+border:none;
+border-radius:15px;
+background:linear-gradient(45deg,#7c3aed,#c084ff);
+color:white;
+font-weight:600;
+cursor:pointer;
+margin-top:10px;
+transition:0.3s;
+}
+button:hover{
+transform:scale(1.05);
+box-shadow:0 0 25px #c084ff;
+}
+#waveCanvas{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-2;
+pointer-events:none;
+}
+
+@media(max-width:768px){
+.title{font-size:38px;margin-top:170px;}
+.subtitle{font-size:15px;}
+.section{padding:35px 25px;}
+}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+<a href="index.html">Home</a>
+<a href="performance.html">Performance</a>
+<a href="attendance.html">Attendance</a>
+</div>
+<canvas id="waveCanvas"></canvas>
+<div class="card">
+<h2>CGPA Calculator</h2>
+
+<input type="text" id="semester" placeholder="Semester Name">
+<input type="number" id="m1" placeholder="Subject 1">
+<input type="number" id="m2" placeholder="Subject 2">
+<input type="number" id="m3" placeholder="Subject 3">
+<input type="number" id="m4" placeholder="Subject 4">
+<input type="number" id="m5" placeholder="Subject 5">
+<input type="number" id="m6" placeholder="Subject 6">
+
+<button onclick="calculate()">Calculate</button>
+<button onclick="clearHistory()">Clear History</button>
+
+<h3 id="result"></h3>
+</div>
+
+<script>
+function calculate(){
+let semester=document.getElementById("semester").value||"Sem";
+let marks=[];
+for(let i=1;i<=6;i++){
+marks.push(parseFloat(document.getElementById("m"+i).value)||0);
+}
+let total=marks.reduce((a,b)=>a+b,0);
+let cgpa=(total/600)*10;
+document.getElementById("result").innerText="CGPA: "+cgpa.toFixed(2);
+let history=JSON.parse(localStorage.getItem("cgpaHistory"))||[];
+history.push({semester:semester,value:parseFloat(cgpa.toFixed(2))});
+localStorage.setItem("cgpaHistory",JSON.stringify(history));
+}
+function clearHistory(){
+localStorage.removeItem("cgpaHistory");
+alert("History Cleared");
+}
+const canvas=document.getElementById("waveCanvas");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let mouse={x:null,y:null};
+
+window.addEventListener("mousemove",e=>{
+mouse.x=e.x;
+mouse.y=e.y;
+waves.push(new Wave(mouse.x,mouse.y));
+});
+
+window.addEventListener("resize",()=>{
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+});
+
+class Wave{
+constructor(x,y){
+this.x=x;
+this.y=y;
+this.radius=0;
+this.alpha=0.5;
+}
+draw(){
+ctx.beginPath();
+ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
+ctx.strokeStyle="rgba(192,132,255,"+this.alpha+")";
+ctx.lineWidth=2;
+ctx.stroke();
+}
+update(){
+this.radius+=2;
+this.alpha-=0.01;
+this.draw();
+}
+}
+
+let waves=[];
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+waves.forEach((wave,index)=>{
+wave.update();
+if(wave.alpha<=0){waves.splice(index,1);}
+});
+requestAnimationFrame(animate);
+}
+animate();
+
+</script>
+
+</body>
+</html>

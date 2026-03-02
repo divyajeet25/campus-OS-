@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Campus-OS Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+scroll-behavior:smooth;
+}
+
+body{
+min-height:100vh;
+background:#0f0f1a;
+color:white;
+overflow-x:hidden;
+position:relative;
+}
+
+/* ================= LANDING PAGE ================= */
+
+#landing{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:linear-gradient(135deg,#0f0f1a,#1a0f2e);
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+z-index:9999;
+}
+
+.landing-content{
+text-align:center;
+}
+
+.landing-content h1{
+font-size:60px;
+background:linear-gradient(45deg,#c084ff,#7c3aed);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+text-shadow:0 0 30px #c084ff;
+}
+
+.loader{
+width:390px;
+height:8px;
+background:rgba(255,255,255,0.15);
+border-radius:20px;
+margin-top:30px;
+overflow:hidden;
+}
+
+.progress{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#7c3aed,#c084ff);
+border-radius:20px;
+transition:width 0.3s ease;
+}
+
+#percent{
+margin-top:12px;
+font-size:14px;
+opacity:0.8;
+}
+
+/* ================= BACKGROUND BLOBS ================= */
+
+body::before,
+body::after{
+content:'';
+position:absolute;
+width:500px;
+height:500px;
+border-radius:50%;
+filter:blur(120px);
+z-index:-1;
+animation:move 14s infinite alternate ease-in-out;
+}
+
+body::before{
+background:#7c3aed;
+top:-120px;
+left:-120px;
+}
+
+body::after{
+background:#c084ff;
+bottom:-120px;
+right:-120px;
+}
+
+@keyframes move{
+from{transform:translate(0,0);}
+to{transform:translate(120px,60px);}
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+position:fixed;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+display:flex;
+flex-wrap:wrap;
+gap:12px;
+padding:12px 20px;
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(30px);
+border-radius:60px;
+border:1px solid rgba(255,255,255,0.18);
+z-index:1000;
+width:95%;
+max-width:1000px;
+justify-content:center;
+}
+
+.navbar a{
+text-decoration:none;
+font-weight:600;
+font-size:14px;
+padding:8px 16px;
+border-radius:30px;
+background:rgba(255,255,255,0.12);
+color:#ffffff;
+transition:0.3s ease;
+border:1px solid rgba(255,255,255,0.2);
+}
+
+.navbar a:hover{
+background:linear-gradient(45deg,#7c3aed,#c084ff);
+box-shadow:0 0 25px #c084ff;
+transform:translateY(-3px) scale(1.05);
+}
+
+/* ================= HERO ================= */
+
+.title{
+margin-top:200px;
+text-align:center;
+font-size:55px;
+font-weight:700;
+background:linear-gradient(45deg,#c084ff,#7c3aed);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+text-shadow:#c084ff 0px 0px 15px;
+}
+
+.subtitle{
+text-align:center;
+max-width:750px;
+margin:25px auto;
+font-size:18px;
+opacity:0.9;
+line-height:1.7;
+padding:0 20px;
+}
+
+.cta{
+text-align:center;
+margin-top:35px;
+}
+
+.cta a{
+padding:14px 35px;
+background:linear-gradient(45deg,#7c3aed,#c084ff);
+color:white;
+border-radius:35px;
+text-decoration:none;
+font-weight:600;
+box-shadow:0 0 25px #c084ff;
+transition:0.3s;
+}
+
+.cta a:hover{
+transform:scale(1.1);
+box-shadow:0 0 40px #c084ff;
+}
+
+/* ================= SECTIONS ================= */
+
+.section{
+width:88%;
+max-width:1050px;
+margin:70px auto;
+padding:55px;
+border-radius:30px;
+background:rgba(255,255,255,0.06);
+backdrop-filter:blur(25px);
+box-shadow:0 15px 50px rgba(0,0,0,0.6);
+
+opacity:0;
+transform:translateY(80px) scale(0.95);
+transition:opacity 0.8s ease, transform 0.8s ease;
+}
+
+.section.show{
+opacity:1;
+transform:translateY(0) scale(1);
+}
+
+.section h2{
+margin-bottom:25px;
+font-size:30px;
+color:#c084ff;
+}
+
+.section p{
+line-height:1.9;
+opacity:0.9;
+}
+
+/* FEATURES */
+
+.features{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:25px;
+margin-top:30px;
+}
+
+.feature-box{
+padding:30px;
+border-radius:25px;
+background:rgba(255,255,255,0.07);
+cursor:pointer;
+transition:0.4s;
+border:1px solid rgba(255,255,255,0.15);
+}
+
+.feature-box:hover{
+transform:translateY(-10px) scale(1.05);
+background:linear-gradient(45deg,#7c3aed,#c084ff);
+box-shadow:0 0 35px rgba(192,132,255,0.9);
+}
+
+/* FOOTER */
+
+.footer{
+text-align:center;
+margin:80px 0 30px 0;
+font-size:14px;
+opacity:0.6;
+}
+
+/* CANVAS */
+
+#waveCanvas{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-2;
+pointer-events:none;
+}
+
+@media(max-width:768px){
+.title{font-size:38px;margin-top:170px;}
+.subtitle{font-size:15px;}
+.section{padding:35px 25px;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- LANDING -->
+<div id="landing">
+    <div class="landing-content">
+        <h1>Campus-OS</h1>
+        <div class="loader">
+            <div class="progress"></div>
+        </div>
+        <div id="percent">0%</div>
+    </div>
+</div>
+
+<canvas id="waveCanvas"></canvas>
+
+<div class="navbar">
+<a href="registeration.html">Register</a>
+<a href="login.html">Login</a>
+<a href="cgpa.html">CGPA</a>
+<a href="performance.html">Performance</a>
+<a href="focus.html">Focus</a>
+<a href="attendance.html">Attendance</a>
+<a href="library.html">Library</a>
+<a href="contact.html">Contact</a>
+</div>
+
+<h1 class="title">Campus-OS</h1>
+
+<p class="subtitle">
+A complete modern student management ecosystem designed to simplify academic life,
+track performance, manage attendance, calculate CGPA, and organize resources.
+</p>
+
+<div class="cta">
+<a href="registeration.html">Get Started</a>
+</div>
+
+<div class="section">
+<h2>🌐 About Campus-OS</h2>
+<p>
+Campus-OS empowers students with intelligent productivity tools, real-time CGPA tracking,
+attendance analytics and performance visualization inside a premium glassmorphic dashboard.
+</p>
+</div>
+
+<div class="section">
+<h2>✨ Key Features</h2>
+
+<div class="features">
+<div class="feature-box" onclick="goTo('cgpa.html')">
+<h3>📊 Smart Analytics</h3>
+<p>Track CGPA trends and visualize academic growth live.</p>
+</div>
+
+<div class="feature-box" onclick="goTo('attendance.html')">
+<h3>📝 Attendance System</h3>
+<p>Monitor academic consistency automatically.</p>
+</div>
+
+<div class="feature-box" onclick="goTo('focus.html')">
+<h3>🎯 Focus Mode</h3>
+<p>Boost productivity using smart study timer.</p>
+</div>
+
+<div class="feature-box" onclick="goTo('library.html')">
+<h3>📚 Digital Library</h3>
+<p>Organize academic resources easily.</p>
+</div>
+</div>
+</div>
+
+
+<div class="section">
+<h2>🚀 Vision of Campus-OS</h2>
+<p>
+Campus-OS is built with a vision to transform traditional student life into a 
+smart digital ecosystem. The goal is to combine performance analytics, 
+attendance tracking, productivity tools and academic management into one 
+intelligent platform that feels modern, smooth and powerful.
+</p>
+
+<p style="margin-top:20px;">
+This project is proudly created and developed by 
+<span style="
+background:linear-gradient(45deg,#7c3aed,#c084ff);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+font-weight:700;
+font-size:18px;
+text-shadow:0 0 15px #c084ff;
+">
+<h1><b><u>Divyajeet Parida</u></b></h1>
+</span>, 
+with the dream of building innovative tech solutions for students.
+</p>
+</div>
+<div class="footer">
+© 2026 Campus-OS | Designed & Developed by Divyajeet Parida 💜
+</div>
+<script>
+
+/* Landing Loader */
+window.addEventListener("load", function(){
+let progress = document.querySelector(".progress");
+let percent = document.getElementById("percent");
+let landing = document.getElementById("landing");
+let count = 0;
+
+let interval = setInterval(()=>{
+count++;
+progress.style.width = count + "%";
+percent.innerText = count + "%";
+
+if(count >= 100){
+clearInterval(interval);
+setTimeout(()=>{
+landing.style.transition="1.2s ease";
+landing.style.opacity="0";
+setTimeout(()=>{ landing.style.display="none"; },1200);
+},400);
+}
+},25);
+});
+
+/* Scroll Reveal */
+/* ===== Advanced Scroll Reveal (Fade In + Fade Out) ===== */
+
+const sections = document.querySelectorAll(".section");
+
+const observer = new IntersectionObserver((entries)=>{
+entries.forEach(entry=>{
+
+if(entry.isIntersecting){
+entry.target.classList.add("show");
+}
+else{
+entry.target.classList.remove("show");
+}
+
+});
+},{
+threshold:0.25
+});
+
+sections.forEach(section=>{
+observer.observe(section);
+});
+
+/* Navigation */
+function goTo(page){
+window.location.href=page;
+}
+
+/* Water Wave Cursor */
+const canvas=document.getElementById("waveCanvas");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let mouse={x:null,y:null};
+
+window.addEventListener("mousemove",e=>{
+mouse.x=e.x;
+mouse.y=e.y;
+waves.push(new Wave(mouse.x,mouse.y));
+});
+
+window.addEventListener("resize",()=>{
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+});
+
+class Wave{
+constructor(x,y){
+this.x=x;
+this.y=y;
+this.radius=0;
+this.alpha=0.5;
+}
+draw(){
+ctx.beginPath();
+ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
+ctx.strokeStyle="rgba(192,132,255,"+this.alpha+")";
+ctx.lineWidth=2;
+ctx.stroke();
+}
+update(){
+this.radius+=2;
+this.alpha-=0.01;
+this.draw();
+}
+}
+
+let waves=[];
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+waves.forEach((wave,index)=>{
+wave.update();
+if(wave.alpha<=0){waves.splice(index,1);}
+});
+requestAnimationFrame(animate);
+}
+animate();
+
+</script>
+
+</body>
+</html>

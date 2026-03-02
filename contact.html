@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Contact - Campus OS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+min-height:100vh;
+background:#0f0f1a;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+text-align:center;
+}
+
+.card{
+background:rgba(255,255,255,0.08);
+padding:50px;
+border-radius:30px;
+backdrop-filter:blur(25px);
+box-shadow:0 15px 50px rgba(0,0,0,0.6);
+width:90%;
+max-width:500px;
+}
+
+h1{
+margin-bottom:30px;
+color:#c084ff;
+}
+
+.info{
+margin:20px 0;
+font-size:18px;
+}
+
+a{
+color:#c084ff;
+text-decoration:none;
+font-weight:600;
+}
+
+a:hover{
+text-decoration:underline;
+}
+
+.back{
+margin-top:30px;
+display:inline-block;
+padding:10px 25px;
+background:linear-gradient(45deg,#7c3aed,#c084ff);
+border-radius:25px;
+color:white;
+text-decoration:none;
+}
+#waveCanvas{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-2;
+pointer-events:none;
+}
+
+@media(max-width:768px){
+.title{font-size:38px;margin-top:170px;}
+.subtitle{font-size:15px;}
+.section{padding:35px 25px;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h1>Contact Me</h1>
+<canvas id="waveCanvas"></canvas>
+<div class="info">
+📱 Mobile: 9348580688
+</div>
+
+<div class="info">
+📧 Email: divyajeetparida9@gmail.com
+</div>
+
+<div class="info">
+💻 GitHub: 
+<a href="https://github.com/divyajeet25" target="_blank">
+github.com/divyajeet25
+</a>
+</div>
+
+<div class="info">
+📸 Instagram: 
+<a href="https://instagram.com/divx.legend_king" target="_blank">
+@divx.legend_king
+</a>
+</div>
+
+<a href="index.html" class="back">⬅ Back to Home</a>
+
+</div>
+<script>
+    const canvas=document.getElementById("waveCanvas");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let mouse={x:null,y:null};
+
+window.addEventListener("mousemove",e=>{
+mouse.x=e.x;
+mouse.y=e.y;
+waves.push(new Wave(mouse.x,mouse.y));
+});
+
+window.addEventListener("resize",()=>{
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+});
+
+class Wave{
+constructor(x,y){
+this.x=x;
+this.y=y;
+this.radius=0;
+this.alpha=0.5;
+}
+draw(){
+ctx.beginPath();
+ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
+ctx.strokeStyle="rgba(192,132,255,"+this.alpha+")";
+ctx.lineWidth=2;
+ctx.stroke();
+}
+update(){
+this.radius+=2;
+this.alpha-=0.01;
+this.draw();
+}
+}
+
+let waves=[];
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+waves.forEach((wave,index)=>{
+wave.update();
+if(wave.alpha<=0){waves.splice(index,1);}
+});
+requestAnimationFrame(animate);
+}
+animate();
+
+</script>
+</body>
+</html>
